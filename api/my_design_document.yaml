@@ -5,19 +5,255 @@ meta:
   created: 1757481370584
   modified: 1757481370584
   description: ""
+collection:
+  - name: accounts
+    meta:
+      id: fld_3d17f27d57f742a68caa021f926c3c15
+      created: 1757481502688
+      modified: 1757481567458
+      sortKey: -1757481502688
+      description: Operations related to account management (retrieval and balance updates)
+    children:
+      - url: "{{ _.base_url }}/accounts"
+        name: List all accounts
+        meta:
+          id: req_59d5dfacc8344f51a077ee47c9bd893e
+          created: 1757481502689
+          modified: 1757481502689
+          isPrivate: false
+          description: Returns a list of all accounts with basic details.
+          sortKey: -1757481502689
+        method: GET
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/accounts/{{ _.accountId }}/credit"
+        name: Credit an account
+        meta:
+          id: req_053f545c49b64f02b73c1a4cba4f5b98
+          created: 1757481502690
+          modified: 1757481502690
+          isPrivate: false
+          description: Increases the account's balance by the specified amount.
+          sortKey: -1757481502690
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "amount": 100
+            }
+        headers:
+          - name: Content-Type
+            disabled: false
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/accounts"
+        name: Create a new account
+        meta:
+          id: req_1869ff94d6ae4a71b881d3b95b80b30a
+          created: 1757481502690
+          modified: 1757481598099
+          isPrivate: false
+          description: Creates a new account with an initial balance. The account ID is
+            automatically generated.
+          sortKey: -1757481502690
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "type": "savings",
+              "initial_balance": 5000
+            }
+        headers:
+          - name: Content-Type
+            disabled: false
+            value: application/json
+        scripts:
+          preRequest: >-
+            if (!insomnia.environment.get("accountId")) {
+              const host = insomnia.environment.get("host");
+              const scheme = insomnia.environment.get("scheme");
+              const baseUrl = `${scheme}://${host}`;
+
+              const createAccountRequest = {
+                url: `${baseUrl}/accounts`,
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: {
+                  mode: "raw",
+                  raw: JSON.stringify({
+                    type: "savings",
+                    initial_balance: 5000.0,
+                  }),
+                },
+              };
+
+              const response = await new Promise((resolve, reject) => {
+                insomnia.sendRequest(createAccountRequest, (err, resp) => {
+                  if (err != null) {
+                    reject(err);
+                  } else {
+                    resolve(resp);
+                  }
+                });
+              });
+
+              if (response.code !== 201) {
+                throw new Error(`Account creation failed. Status code: ${response.code}`);
+              }
+
+              const responseBody = JSON.parse(response.body.toString());
+              insomnia.environment.set("accountId", insomnia.response.text().account_id);
+            }
+          afterResponse: >
+            // Extract account_id from the response and store it in the
+            environment
+
+            let data = insomnia.response.json();
+
+            insomnia.environment.set("accountId", data.account_id);
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/accounts/{{ _.accountId }}/debit"
+        name: Debit an account
+        meta:
+          id: req_e0bbce4aa56243829bbb6f0e4ab16eb1
+          created: 1757481502690
+          modified: 1757481502690
+          isPrivate: false
+          description: Decreases the account's balance by the specified amount.
+          sortKey: -1757481502690
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "amount": 100
+            }
+        headers:
+          - name: Content-Type
+            disabled: false
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/accounts/{{ _.accountId }}"
+        name: Retrieve a single account
+        meta:
+          id: req_fa5919d9d39b4c909ab59ac83e3d3df1
+          created: 1757481502690
+          modified: 1757481502690
+          isPrivate: false
+          description: Returns details for the specified account including current balance.
+          sortKey: -1757481502690
+        method: GET
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: health
+    meta:
+      id: fld_f9842534d29947c2b7842233c9aed3a4
+      created: 1757481502688
+      modified: 1757481502688
+      sortKey: -1757481502688
+      description: Health check endpoints for monitoring service status
+    children:
+      - url: "{{ _.base_url }}/health"
+        name: Health check endpoint
+        meta:
+          id: req_9e1435af726e432192fd501b58276737
+          created: 1757481502688
+          modified: 1757481502688
+          isPrivate: false
+          description: Returns the API's health status
+          sortKey: -1757481502688
+        method: GET
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/health"
+        name: Health check endpoint (HEAD)
+        meta:
+          id: req_2521a8c1ac0043db94325b32982fa591
+          created: 1757481502689
+          modified: 1757481502689
+          isPrivate: false
+          description: Returns the API's health status without body
+          sortKey: -1757481502689
+        method: HEAD
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
 cookieJar:
   name: Default Jar
   meta:
     id: jar_b26a0db1fc229f90d848825981ecf1299fce6b83
     created: 1757481370595
-    modified: 1757481370595
+    modified: 1757481567455
 environments:
   name: Base Environment
   meta:
     id: env_b26a0db1fc229f90d848825981ecf1299fce6b83
     created: 1757481370594
-    modified: 1757481370594
+    modified: 1757481567458
     isPrivate: false
+  data:
+    base_url: "{{ _.scheme }}://{{ _.host }}{{ _.base_path }}"
+  subEnvironments:
+    - name: OpenAPI env localhost:8081
+      meta:
+        id: env_4a9c09eca9ef450289de67008b5bb5dd
+        created: 1757481502687
+        modified: 1757481567457
+        isPrivate: false
+        sortKey: 1757481502687
+      data:
+        scheme: http
+        base_path: ""
+        host: localhost:8081
+        accountId: 388a66ba-5187-4717-affe-1d3ae42c547e
 spec:
   contents:
     openapi: 3.0.3
