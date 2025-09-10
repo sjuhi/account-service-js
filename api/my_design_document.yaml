@@ -50,7 +50,6 @@ collection:
             }
         headers:
           - name: Content-Type
-            disabled: false
             value: application/json
         settings:
           renderRequestBody: true
@@ -80,7 +79,6 @@ collection:
             }
         headers:
           - name: Content-Type
-            disabled: false
             value: application/json
         scripts:
           preRequest: >-
@@ -154,7 +152,6 @@ collection:
             }
         headers:
           - name: Content-Type
-            disabled: false
             value: application/json
         settings:
           renderRequestBody: true
