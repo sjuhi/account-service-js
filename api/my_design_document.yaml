@@ -704,3 +704,103 @@ spec:
     id: spc_27d8fb0739fd4466bcd54a4a0652ac14
     created: 1757481370593
     modified: 1757481394312
+testSuites:
+  - name: Accounts Test Suites
+    meta:
+      id: uts_e552e44f74204aed99818b91cb178992
+      created: 1757485021944
+      modified: 1757485107732
+      sortKey: -1757485021944
+    tests:
+      - name: Credit Account
+        meta:
+          id: ut_c86ffceafbd545e09cfa84655d4e5693
+          created: 1757485107783
+          modified: 1757485252857
+          sortKey: -1757485107783
+        requestId: req_053f545c49b64f02b73c1a4cba4f5b98
+        code: |-
+          const response = await insomnia.send();
+
+          expect(response.status).to.equal(200);
+
+          const account = JSON.parse(response.data);
+          expect(account).to.have.property('balance').that.is.a('number');
+      - name: Health Check
+        meta:
+          id: ut_d2f920cb374448768556e394d5c18710
+          created: 1757485108371
+          modified: 1757485246658
+          sortKey: -1757485108371
+        requestId: req_9e1435af726e432192fd501b58276737
+        code: |-
+          const response = await insomnia.send();
+
+          expect(response.status).to.equal(200);
+
+          const body = response.data;
+          expect(body).to.be.a('string');
+          expect(body.toLowerCase()).to.include('accounts api');
+      - name: List All Accounts
+        meta:
+          id: ut_b4bd470c05fd432d91843293ce6c72bb
+          created: 1757485108919
+          modified: 1757485243025
+          sortKey: -1757485108919
+        requestId: req_59d5dfacc8344f51a077ee47c9bd893e
+        code: |-
+          const response = await insomnia.send();
+
+          expect(response.status).to.equal(200);
+
+          const accounts = JSON.parse(response.data);
+          expect(accounts).to.be.an('array');
+
+          if (accounts.length > 0) {
+            const account = accounts[0];
+            expect(account).to.have.property('account_id');
+          }
+      - name: Create New Account
+        meta:
+          id: ut_0ff61c161d334109b8f6febb07cfff3d
+          created: 1757485109373
+          modified: 1757485250196
+          sortKey: -1757485109373
+        requestId: req_1869ff94d6ae4a71b881d3b95b80b30a
+        code: |-
+          const response = await insomnia.send();
+
+          expect(response.status).to.equal(201);
+
+          const account = JSON.parse(response.data);
+          expect(account).to.have.property('account_id').that.is.a('string');
+          expect(account).to.have.property('type').that.is.a('string');
+          expect(account).to.have.property('balance').that.is.a('number');
+      - name: Debit Account
+        meta:
+          id: ut_60c91ac6076e422792b9f93e3392a497
+          created: 1757485189942
+          modified: 1757485236274
+          sortKey: -1757485189942
+        requestId: req_e0bbce4aa56243829bbb6f0e4ab16eb1
+        code: |
+          const response = await insomnia.send();
+
+          expect(response.status).to.equal(200);
+
+          const account = JSON.parse(response.data);
+          expect(account).to.have.property('balance').that.is.a('number');
+      - name: Get Account By ID
+        meta:
+          id: ut_dbb50d2ccf184fe3b578a0fe36eec203
+          created: 1757485208846
+          modified: 1757485232771
+          sortKey: -1757485208846
+        requestId: req_fa5919d9d39b4c909ab59ac83e3d3df1
+        code: |-
+          const response = await insomnia.send();
+
+          expect(response.status).to.equal(200);
+
+          const account = JSON.parse(response.data);
+          expect(account).to.have.property('account_id').that.is.a('string');
